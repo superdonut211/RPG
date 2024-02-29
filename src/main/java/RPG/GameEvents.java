@@ -34,7 +34,17 @@ public class GameEvents {
                 System.out.println("You skipped the item and found " + gold + " gold instead.");
             }
 
-        } else { // Chance to restore health/mana
+            
+        }else if (random.nextInt(100) < 10) { // 10% chance to find a shop
+            System.out.println("You've stumbled upon a shop! Do you wish to enter? (yes/no)");
+            String shopInput = InputScanner.SCANNER.nextLine();
+            if (shopInput.equalsIgnoreCase("yes")) {
+                enterShop(player);
+            } else {
+                System.out.println("You decided to skip the shop.");
+            }
+        } 
+    	else { // Chance to restore health/mana
             int healthRestored = random.nextInt(20) + 10; // Restore between 10 and 30 health
             player.setHealth(Math.min(player.getHealth() + healthRestored, player.getMaxHealth()));
             System.out.println("You restored " + healthRestored + " health!");
@@ -96,5 +106,51 @@ public class GameEvents {
                 return null; // Fallback in case of an unexpected value
         }
     }
-
+    
+    private static void enterShop(Character player) {
+        System.out.println("Welcome to the shop! Here's what's available for purchase:");
+        System.out.println("1. Health Potion (50 gold)");
+        System.out.println("2. Mana Potion (50 gold)");
+        System.out.println("3. Random Item (100 gold)");
+        System.out.println("4. Leave Shop");
+        System.out.print("Please make a selection (1-4): ");
+        
+        String selection = InputScanner.SCANNER.nextLine();
+        switch (selection) {
+            case "1":
+                if (player.getCurrency() >= 50) {
+                    player.addCurrency(-50);
+                    player.setHealth(Math.min(player.getHealth() + 50, player.getMaxHealth()));
+                    System.out.println("You purchased a Health Potion and restored 50 health.");
+                } else {
+                    System.out.println("Not enough gold.");
+                }
+                break;
+            case "2":
+                if (player.getCurrency() >= 50) {
+                    player.addCurrency(-50);
+                    player.restoreMana(Math.min(player.getMana() + 50, player.getMaxMana()));
+                    System.out.println("You purchased a Mana Potion and restored 50 mana.");
+                } else {
+                    System.out.println("Not enough gold.");
+                }
+                break;
+            case "3":
+                if (player.getCurrency() >= 100) {
+                    player.addCurrency(-100);
+                    Item randomItem = generateRandomItem();
+                    System.out.println("You purchased a random item: " + randomItem.getName());
+                    // Assuming there's logic to equip or add this item to inventory
+                } else {
+                    System.out.println("Not enough gold.");
+                }
+                break;
+            case "4":
+                System.out.println("Thank you for visiting!");
+                break;
+            default:
+                System.out.println("Invalid selection.");
+                break;
+        }
+    }
 }
