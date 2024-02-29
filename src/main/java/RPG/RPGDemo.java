@@ -9,17 +9,29 @@ public class RPGDemo {
 
         System.out.println("Choose your character class:");
         System.out.println("1: Fighter\n2: Mage\n3: Thief\nEnter number for choice or anything else for random:");
-        // Call method directly without re-declaring the variable
         CharacterClass chosenClass = chooseClass(scanner.nextLine());
 
         System.out.println("Choose your character race:");
         System.out.println("1: Orc\n2: Elf\n3: Dwarf\n4: Human\nEnter number for choice or anything else for random:");
-        // Correctly obtaining the race using the method and not re-declaring the player variable
         CharacterRace chosenRace = chooseRace(scanner.nextLine());
 
-        // Correcting the constructor call to use chosenRace instead of a string
         Character player = new Character("Hero", chosenClass, chosenRace, 100, 10, 5, 8);
         CombatManager combatManager = new CombatManager();
+        Item helmet = ItemFactory.createItem("Helmet", "Steel Helm", 0, 0, 2, 0);
+        Item weapon = ItemFactory.createItem("Weapon", "Sword", 0, 5, 0, 0);
+        Item armor = ItemFactory.createItem("Armor", "Chainmail", 10, 0, 3, 0);
+
+        player.equipHelmet((Helmet) helmet);
+        player.equipWeapon((Weapon) weapon);
+        player.equipArmor((Armor) armor);
+        
+        System.out.println("Player Helm: " + player.getHelmetName());
+        System.out.println("Player Weapon: " + player.getArmorName());
+        System.out.println("Player Weapon: " + player.getWeaponName());
+        System.out.println("Player Attack: " + player.getAttack());
+        System.out.println("Player Defense: " + player.getDefense());
+        System.out.println("Player Health: " + player.getHealth());
+        System.out.println("Player Speed: " + player.getSpeed());
         boolean gameRunning = true;
 
         while (gameRunning) {

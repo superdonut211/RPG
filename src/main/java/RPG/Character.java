@@ -1,13 +1,15 @@
 public class Character {
     private String name;
     private CharacterClass characterClass;
-    private CharacterRace characterRace; // New attribute for race
+    private CharacterRace characterRace;
     private int health;
     private int attack;
     private int defense;
     private int speed;
+    private Helmet helmet;
+    private Weapon weapon; 
+    private Armor armor;
 
-    // Constructor updated to include CharacterRace
     public Character(String name, CharacterClass characterClass, CharacterRace characterRace, int health, int attack, int defense, int speed) {
         this.name = name;
         this.characterClass = characterClass;
@@ -16,27 +18,75 @@ public class Character {
         this.attack = attack;
         this.defense = defense;
         this.speed = speed;
-        adjustStatsForRace(); // Adjust stats based on race
+        adjustStatsForRace();
     }
 
     private void adjustStatsForRace() {
         switch (this.characterRace) {
             case ORC:
-                this.attack += 2; // Example: Orcs have higher attack
+                this.attack += 2;
                 break;
             case ELF:
-                this.speed += 2; // Elves are faster
+                this.speed += 2;
                 break;
             case DWARF:
-                this.defense += 2; // Dwarves are more defensive
+                this.defense += 2;
                 break;
             case HUMAN:
-                this.health -= 10; // Humans have less HP but could have other advantages
+                this.health -= 10;
                 break;
         }
     }
 
-    // Getters and setters for character attributes
+    public void equipHelmet(Helmet helmet) {
+        this.helmet = helmet;
+        applyItemBonuses();
+    }
+
+    public void equipWeapon(Weapon weapon) {
+        this.weapon = weapon;
+        applyItemBonuses();
+    }
+
+    public void equipArmor(Armor armor) {
+        this.armor = armor;
+        applyItemBonuses();
+    }
+
+    public String getHelmetName() {
+        return this.helmet != null ? this.helmet.getName() : "None";
+    }
+
+    public String getWeaponName() {
+        return this.weapon != null ? this.weapon.getName() : "None";
+    }
+
+    public String getArmorName() {
+        return this.armor != null ? this.armor.getName() : "None";
+    }
+
+    private void applyItemBonuses() {
+        this.health = 100;
+        this.attack = 10;
+        this.defense = 5;
+        this.speed = 8;
+
+        if (helmet != null) {
+            this.health += helmet.getBonusHealth();
+            this.defense += helmet.getBonusDefense();
+            this.speed += helmet.getBonusSpeed();
+        }
+        if (weapon != null) {
+            this.attack += weapon.getBonusAttack();
+        }
+        if (armor != null) {
+            this.health += armor.getBonusHealth();
+            this.defense += armor.getBonusDefense();
+        }
+        adjustStatsForRace();
+    }
+
+    // Getters and Setters
     public String getName() {
         return name;
     }
@@ -68,6 +118,4 @@ public class Character {
     public int getSpeed() {
         return speed;
     }
-
-    // Additional methods like attacking, defending, etc., can be added here.
 }
