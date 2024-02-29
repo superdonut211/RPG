@@ -25,23 +25,30 @@ public class RPGDemo {
         player.equipArmor((Armor) armor);
         
         boolean gameRunning = true;
-
         while (gameRunning) {
-        	player.printRelevantInfo();
+            player.printRelevantInfo();
             floorManager.nextFloor();
             String enemyType = floorManager.getEnemyTypeForCurrentFloor();
             Enemy enemy = enemyManager.spawnEnemy(enemyType);
             
             if (enemy != null) {
                 System.out.println("Encountering enemy: " + enemy.getName());
-                combatManager.startCombat(player, enemy); // Implement combat logic
+                combatManager.startCombat(player, enemy);
                 
                 if (player.getHealth() <= 0) {
                     System.out.println("You were defeated. Game over.");
-                    break; // Exit the game loop if the player is defeated
+                    break;
                 }
             } else {
                 System.out.println("No enemies on this floor.");
+            }
+
+            // After combat or shop, check player's health
+            if (((double)player.getHealth() / player.getMaxHealth()) < 0.15) {
+                System.out.println("Critically injured, returning to the most recent safe floor to recuperate.");
+                floorManager.goToMostRecentTenthFloor();
+                player.setHealth(player.getMaxHealth()); // Restore health
+                player.restoreMana(player.getMaxMana()); // Restore mana
             }
 
             System.out.println("Continue to the next floor? (yes/no)");
@@ -50,6 +57,7 @@ public class RPGDemo {
                 gameRunning = false;
             }
         }
+
 
         InputScanner.closeScanner();
     }
