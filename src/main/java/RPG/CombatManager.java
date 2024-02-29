@@ -31,6 +31,7 @@ public class CombatManager {
             if (enemy.getHealth() <= 0) {
                 System.out.println("You have defeated the " + enemy.getName() + "!");
                 System.out.println("You are at: " + player.getHealth() + " HP.\n");
+                GameEvents.handlePostCombat(player);
             } else if (player.getHealth() <= 0) {
                 System.out.println("You were defeated by the " + enemy.getName() + "...");
             }

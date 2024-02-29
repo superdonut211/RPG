@@ -2,7 +2,9 @@ public class Character {
     private String name;
     private CharacterClass characterClass;
     private CharacterRace characterRace;
-    private int health;
+    private int health, maxHealth;
+    private int mana, maxMana;
+    private int currency; 
     private int attack;
     private int defense;
     private int speed;
@@ -10,14 +12,19 @@ public class Character {
     private Weapon weapon; 
     private Armor armor;
 
-    public Character(String name, CharacterClass characterClass, CharacterRace characterRace, int health, int attack, int defense, int speed) {
+    // Adjust the constructor to include maxHealth and maxMana
+    public Character(String name, CharacterClass characterClass, CharacterRace characterRace, int maxHealth, int maxMana, int attack, int defense, int speed) {
         this.name = name;
         this.characterClass = characterClass;
         this.characterRace = characterRace;
-        this.health = health;
+        this.maxHealth = maxHealth;
+        this.health = maxHealth; // Initialize current health to maxHealth
+        this.maxMana = maxMana;
+        this.mana = maxMana; // Initialize current mana to maxMana
         this.attack = attack;
         this.defense = defense;
         this.speed = speed;
+        this.currency = 0; // Initialize currency
         adjustStatsForRace();
     }
 
@@ -38,6 +45,13 @@ public class Character {
         }
     }
 
+    public void addCurrency(int amount) {
+        this.currency += amount;
+    }
+
+    public int getCurrency() {
+        return currency;
+    }
     public void equipHelmet(Helmet helmet) {
         this.helmet = helmet;
         applyItemBonuses();
@@ -85,6 +99,19 @@ public class Character {
         }
         adjustStatsForRace();
     }
+    
+    // Methods for mana management
+    public void consumeMana(int amount) {
+        this.mana = Math.max(this.mana - amount, 0);
+    }
+
+    public void restoreMana(int amount) {
+        this.mana = Math.min(this.mana + amount, this.maxMana);
+    }
+
+    public int getMana() {
+        return mana;
+    }
 
     // Getters and Setters
     public String getName() {
@@ -106,7 +133,13 @@ public class Character {
     public void setHealth(int health) {
         this.health = health;
     }
-
+    
+    public void setMaxHealth(int maxHealth) {
+    	this.maxHealth = maxHealth;
+    }
+    public int getMaxHealth() {
+    	return this.maxHealth;
+    }
     public int getAttack() {
         return attack;
     }

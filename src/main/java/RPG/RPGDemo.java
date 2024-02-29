@@ -15,7 +15,7 @@ public class RPGDemo {
         System.out.println("1: Orc\n2: Elf\n3: Dwarf\n4: Human\nEnter number for choice or anything else for random:");
         CharacterRace chosenRace = chooseRace(scanner.nextLine());
 
-        Character player = new Character("Hero", chosenClass, chosenRace, 100, 10, 5, 8);
+        Character player = new Character("Hero", chosenClass, chosenRace, 100, 10, 5, 8, 10);
         CombatManager combatManager = new CombatManager();
         Item helmet = ItemFactory.createItem("Helmet", "Steel Helm", 0, 0, 2, 0);
         Item weapon = ItemFactory.createItem("Weapon", "Sword", 0, 5, 0, 0);
