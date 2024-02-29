@@ -8,6 +8,9 @@ plugins {
 
 mainClassName = 'src/main/java/RPG/RPGDemo.java'
 
+run {
+    standardInput = System.in
+}
 
 repositories {
     jcenter()
