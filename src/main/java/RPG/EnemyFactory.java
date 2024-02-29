@@ -16,6 +16,7 @@ public class EnemyFactory {
 }
 
 class Orc implements Enemy {
+	private StatusEffect statusEffect = null;
     private int health = 20;
     private int attack = 5;
     private String name = "Orc";
@@ -63,10 +64,25 @@ class Orc implements Enemy {
     public int getDefense() {
         return defense;
     }
+    @Override
+    public void applyStatusEffect(StatusEffect effect) {
+        this.statusEffect = effect;
+    }
+
+    @Override
+    public StatusEffect getStatusEffect() {
+        return statusEffect;
+    }
+
+    @Override
+    public void clearStatusEffect() {
+        this.statusEffect = null;
+    }
 }
 
 
 class Troll implements Enemy {
+	private StatusEffect statusEffect = null;
     private int health = 20;
     private int attack = 5;
     private String name = "Troll";
@@ -104,4 +120,19 @@ class Troll implements Enemy {
     public int getDefense() {
         return defense;
     }
+    @Override
+    public void applyStatusEffect(StatusEffect effect) {
+        this.statusEffect = effect;
+    }
+
+    @Override
+    public StatusEffect getStatusEffect() {
+        return statusEffect;
+    }
+
+    @Override
+    public void clearStatusEffect() {
+        this.statusEffect = null;
+    }
+    
 }

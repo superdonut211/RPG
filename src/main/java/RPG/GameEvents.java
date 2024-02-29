@@ -47,11 +47,11 @@ public class GameEvents {
     	else { // Chance to restore health/mana
             int healthRestored = random.nextInt(20) + 10; // Restore between 10 and 30 health
             player.setHealth(Math.min(player.getHealth() + healthRestored, player.getMaxHealth()));
-            System.out.println("You restored " + healthRestored + " health!");
+            System.out.println("You found a health potion and restored " + healthRestored + " health!");
 
             int manaRestored = random.nextInt(15) + 5; // Restore between 5 and 20 mana
             player.restoreMana(Math.min(player.getMana() + manaRestored, player.getMaxMana()));
-            System.out.println("You restored " + manaRestored + " mana!");
+            System.out.println("You found a mana potion and restored " + manaRestored + " mana!");
         }
     }
     

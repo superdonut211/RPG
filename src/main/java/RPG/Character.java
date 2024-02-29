@@ -8,6 +8,8 @@ public class Character {
     private int attack;
     private int defense;
     private int speed;
+    private int xp = 0;
+    private int level = 1;
     private Helmet helmet;
     private Weapon weapon; 
     private Armor armor;
@@ -154,10 +156,56 @@ public class Character {
         return speed;
     }
     
+    public void addXp(int amount) {
+        xp += amount;
+        System.out.println("Gained " + amount + " XP.");
+        
+        // Check if the character has enough XP to level up
+        while (xp >= xpToNextLevel()) {
+            xp -= xpToNextLevel(); // Subtract the XP needed for the next level
+            level++; // Increase character's level
+            levelUp(); // Apply level-up benefits
+            System.out.println("Congratulations! You've reached level " + level + "!");
+        }
+    }
+    
+    // Calculate the XP needed to reach the next level
+    private int xpToNextLevel() {
+        // This is a simple formula; adjust according to your game's design
+        return 100 * level;
+    }
+
+    // Apply benefits when leveling up
+    private void levelUp() {
+        // Increase stats upon leveling up. Adjust these values as needed.
+        maxHealth += 10;
+        health = maxHealth; // Fully heal the character upon leveling up
+        maxMana += 5;
+        mana = maxMana; // Fully restore mana upon leveling up
+        attack += 2;
+        defense += 2;
+        speed += 1;
+        
+        // Optionally, you can also grant a currency bonus upon leveling up
+        currency += 50;
+        System.out.println("Stats increased! Health, Mana, Attack, Defense, and Speed have been improved.");
+    }
+
+    // Getters for XP and level
+    public int getXp() {
+        return xp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+    
     public void printAllInfo() {
         System.out.println("Character Name: " + name);
         System.out.println("Class: " + characterClass);
         System.out.println("Race: " + characterRace);
+        System.out.println("Level: " + level);
+        System.out.println("XP: " + xp + "/" + xpToNextLevel());
         System.out.println("Health: " + health + "/" + maxHealth);
         System.out.println("Mana: " + mana + "/" + maxMana);
         System.out.println("Attack: " + attack);
@@ -171,6 +219,8 @@ public class Character {
     public void printRelevantInfo() {
         System.out.println("Health: " + health + "/" + maxHealth);
         System.out.println("Mana: " + mana + "/" + maxMana);
+        System.out.println("Level: " + level);
+        System.out.println("XP: " + xp + "/" + xpToNextLevel());
         System.out.println("Attack: " + attack);
         System.out.println("Defense: " + defense);
         System.out.println("Speed: " + speed);

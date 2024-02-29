@@ -8,8 +8,8 @@ public class FloorManager {
     }
 
     public void goToMostRecentTenthFloor() {
-        int targetFloor = (currentFloor / 10) * 10;
-        currentFloor = targetFloor == 0 ? 1 : targetFloor; // Ensure we don't go to floor 0
+        int targetFloor = (currentFloor / 10) * 10 + 1;
+        currentFloor = targetFloor == 1 ? 1 : targetFloor; // Ensure we don't go to floor 0
         System.out.println("Returning to floor " + currentFloor + " to recuperate.");
     }
 
