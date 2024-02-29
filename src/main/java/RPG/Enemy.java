@@ -3,4 +3,6 @@ public interface Enemy {
     int getAttack();
     int getHealth();
     void takeDamage(int damage);
+    int getSpeed();
+    int getDefense();
 }

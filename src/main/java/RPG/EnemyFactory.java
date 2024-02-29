@@ -3,10 +3,12 @@
 public class EnemyFactory {
     public static Enemy createEnemy(String type) {
         switch (type) {
-            case "orc":
-                return new Orc();
-            case "troll":
-                return new Troll();
+            case "small":
+                return new Orc(); // Standard Orc for small enemy
+            case "medium":
+                return new Orc(30, 7); // Enhanced Orc for medium enemy
+            case "boss":
+                return new Troll(); // Troll for boss enemy
             default:
                 throw new IllegalArgumentException("Unknown enemy type: " + type);
         }
@@ -15,9 +17,23 @@ public class EnemyFactory {
 
 class Orc implements Enemy {
     private int health = 20;
-    private final int attack = 5;
-    private final String name = "Orc";
+    private int attack = 5;
+    private String name = "Orc";
+    private int speed = 3; // Example value
+    private int defense = 2; // Example value
 
+    // Default constructor for a small Orc
+    public Orc() {
+        this.health = 20;
+        this.attack = 5;
+    }
+
+    // Constructor for variable stats, allowing for "medium" Orcs
+    public Orc(int health, int attack) {
+        this.health = health;
+        this.attack = attack;
+    }
+    
     @Override
     public String getName() {
         return name;
@@ -36,14 +52,29 @@ class Orc implements Enemy {
     @Override
     public void takeDamage(int damage) {
         health -= damage;
+    }
+
+    @Override
+    public int getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public int getDefense() {
+        return defense;
     }
 }
 
-class Troll implements Enemy {
-    private int health = 30;
-    private final int attack = 7;
-    private final String name = "Troll";
 
+class Troll implements Enemy {
+    private int health = 20;
+    private int attack = 5;
+    private String name = "Troll";
+    private int speed = 10; 
+    private int defense = 15; 
+
+
+    
     @Override
     public String getName() {
         return name;
@@ -62,5 +93,15 @@ class Troll implements Enemy {
     @Override
     public void takeDamage(int damage) {
         health -= damage;
+    }
+
+    @Override
+    public int getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public int getDefense() {
+        return defense;
     }
 }
