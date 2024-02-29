@@ -112,7 +112,9 @@ public class Character {
     public int getMana() {
         return mana;
     }
-
+    public int getMaxMana() {
+        return maxMana;
+    }
     // Getters and Setters
     public String getName() {
         return name;
@@ -150,5 +152,32 @@ public class Character {
 
     public int getSpeed() {
         return speed;
+    }
+    
+    public void printAllInfo() {
+        System.out.println("Character Name: " + name);
+        System.out.println("Class: " + characterClass);
+        System.out.println("Race: " + characterRace);
+        System.out.println("Health: " + health + "/" + maxHealth);
+        System.out.println("Mana: " + mana + "/" + maxMana);
+        System.out.println("Attack: " + attack);
+        System.out.println("Defense: " + defense);
+        System.out.println("Speed: " + speed);
+        System.out.println("Currency: " + currency);
+        System.out.println("Helmet: " + getHelmetName());
+        System.out.println("Weapon: " + getWeaponName());
+        System.out.println("Armor: " + getArmorName());
+    }
+    public void printRelevantInfo() {
+        System.out.println("Health: " + health + "/" + maxHealth);
+        System.out.println("Mana: " + mana + "/" + maxMana);
+        System.out.println("Attack: " + attack);
+        System.out.println("Defense: " + defense);
+        System.out.println("Speed: " + speed);
+        System.out.println("Currency: " + currency);
+        System.out.println("Equipped Items:");
+        System.out.println("  Helmet: " + getHelmetName());
+        System.out.println("  Weapon: " + getWeaponName());
+        System.out.println("  Armor: " + getArmorName());
     }
 }

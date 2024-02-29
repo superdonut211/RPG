@@ -3,17 +3,16 @@ import java.util.Scanner;
 
 public class RPGDemo {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         FloorManager floorManager = new FloorManager();
         EnemyManager enemyManager = new EnemyManager();
 
         System.out.println("Choose your character class:");
         System.out.println("1: Fighter\n2: Mage\n3: Thief\nEnter number for choice or anything else for random:");
-        CharacterClass chosenClass = chooseClass(scanner.nextLine());
+        CharacterClass chosenClass = chooseClass(InputScanner.SCANNER.nextLine());
 
         System.out.println("Choose your character race:");
         System.out.println("1: Orc\n2: Elf\n3: Dwarf\n4: Human\nEnter number for choice or anything else for random:");
-        CharacterRace chosenRace = chooseRace(scanner.nextLine());
+        CharacterRace chosenRace = chooseRace(InputScanner.SCANNER.nextLine());
 
         Character player = new Character("Hero", chosenClass, chosenRace, 100, 10, 5, 8, 10);
         CombatManager combatManager = new CombatManager();
@@ -25,16 +24,10 @@ public class RPGDemo {
         player.equipWeapon((Weapon) weapon);
         player.equipArmor((Armor) armor);
         
-        System.out.println("Player Helm: " + player.getHelmetName());
-        System.out.println("Player Weapon: " + player.getArmorName());
-        System.out.println("Player Weapon: " + player.getWeaponName());
-        System.out.println("Player Attack: " + player.getAttack());
-        System.out.println("Player Defense: " + player.getDefense());
-        System.out.println("Player Health: " + player.getHealth());
-        System.out.println("Player Speed: " + player.getSpeed());
         boolean gameRunning = true;
 
         while (gameRunning) {
+        	player.printRelevantInfo();
             floorManager.nextFloor();
             String enemyType = floorManager.getEnemyTypeForCurrentFloor();
             Enemy enemy = enemyManager.spawnEnemy(enemyType);
@@ -52,13 +45,13 @@ public class RPGDemo {
             }
 
             System.out.println("Continue to the next floor? (yes/no)");
-            String input = scanner.nextLine();
+            String input = InputScanner.SCANNER.nextLine();
             if (!input.equalsIgnoreCase("yes")) {
                 gameRunning = false;
             }
         }
 
-        scanner.close();
+        InputScanner.closeScanner();
     }
     
     private static CharacterClass chooseClass(String input) {
