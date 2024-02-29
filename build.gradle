@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id "com.github.spotbugs" version "5.0.12"
+}
+
+
+mainClassName = 'src/main/java/RPG/RPGDemo.java'
+
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation "junit:junit:4.12"
+}
+
+
+
+checkstyle {
+    toolVersion = '8.8'
+    config = resources.text.fromFile('config/checkstyle/checkstyle.xml')
+}
+
+
+spotbugsMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+spotbugs {
+    ignoreFailures = true
+    showProgress = true
+    effort = 'max'
+}
