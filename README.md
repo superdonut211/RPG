@@ -22,7 +22,10 @@ of EnemyManager is ever created and accessible globally. By employing the Single
 that all parts of my RPG interact with a single, unified enemy management system. This design choice streamlined the 
 enemy spawn process, making it more manageable and less error-prone, as all enemy spawn requests funnel through a 
 single point of access. The Singleton pattern not only enhanced the integrity and consistency of the enemy management 
-logic but also provided a clear and concise way to access and utilize the EnemyManager throughout my game's codebase. 
+logic but also provided a clear and concise way to access and utilize the EnemyManager throughout my game's codebase.
+By making the EnemyManager's constructor private and controlling instance creation through a static method, I ensured 
+a single instance globally accessible, fulfilling the Singleton's primary requirements and enhancing the game's integrity 
+and manageability. 
 
 Factory Method Source:https://www.geeksforgeeks.org/factory-method-for-designing-pattern/
 
@@ -41,7 +44,10 @@ and attack, while a "boss" troll receives a more substantial scaling to represen
 abstraction not only enhances the flexibility and scalability of the enemy spawning mechanism but also adheres to 
 the principle of open/closed design by being open to extension (for new enemy types) while being closed for modification.
 Through the EnemyFactory, I leveraged the Factory Method pattern to centralize enemy creation, providing a clear, 
-maintainable, and scalable approach to generating diverse enemy instances.
+maintainable, and scalable approach to generating diverse enemy instances.The createEnemy method acts as the factory 
+method, deciding the enemy type based on input parameters and ensuring the game's difficulty scales appropriately, 
+which fulfills the pattern's goal to delegate instantiation to subclasses (or, in this case, to delegate based on 
+input parameters), promoting a maintainable and scalable enemy creation process.
 
 Strategy Design Pattern Source: https://www.freecodecamp.org/news/a-beginners-guide-to-the-strategy-design-pattern/#:~:text=The%20Strategy%20Design%20Pattern%20is,statically%20choosing%20a%20single%20one.
 
@@ -55,5 +61,12 @@ provided by the Strategy pattern. This way, the combat system can easily adapt a
 without needing major changes to the code. For instance, the choice between a regular attack and using a special ability 
 is made dynamically during the player's turn, based on certain conditions like the player's mana. This approach makes 
 the combat more interesting and less predictable, which was exactly my goal. By implementing the Strategy pattern, 
-I was able to keep the combat logic separate and easily manageable, making the game more fun and engaging.
+I was able to keep the combat logic separate and easily manageable, making the game more fun and engaging.By encapsulating 
+combat decisions and behaviors within strategies that can vary at runtime, the game's combat system becomes more flexible 
+and engaging, directly addressing the Strategy pattern's goal to allow the behavior of an application to change dynamically, 
+enhancing the overall manageability and fun of the combat system.
+
+
+
+Screen Cast: https://youtu.be/citdShWIVTc
 
