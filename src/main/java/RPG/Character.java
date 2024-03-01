@@ -121,7 +121,9 @@ public class Character {
     public String getName() {
         return name;
     }
-
+    public void setSpeed(int speed) {
+    	this.speed = speed;
+    }
     public CharacterClass getCharacterClass() {
         return characterClass;
     }

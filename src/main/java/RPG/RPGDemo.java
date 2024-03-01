@@ -33,11 +33,20 @@ public class RPGDemo {
             
             if (enemy != null) {
                 System.out.println("Encountering enemy: " + enemy.getName());
-                combatManager.startCombat(player, enemy);
+                combatManager.startCombat(player, enemy, floorManager);
                 
                 if (player.getHealth() <= 0) {
-                    System.out.println("You were defeated. Game over.");
-                    break;
+                    if (floorManager.getCurrentFloor() % 10 == 0) {
+                        System.out.println("You were defeated on the boss floor. Game over.");
+                        break; // Game over only on tenth (boss) floor
+                    } else {
+                        System.out.println("Defeated, but not on a boss floor. Losing 50 gold and returning to the most recent safe floor to recuperate.");
+                        player.addCurrency(-50); // Losing 50 gold
+                        floorManager.goToMostRecentTenthFloor();
+                        player.setHealth(player.getMaxHealth()); // Restore health
+                        player.restoreMana(player.getMaxMana()); // Restore mana
+                        continue; // Skip to the next iteration, allowing the game to continue
+                    }
                 }
             } else {
                 System.out.println("No enemies on this floor.");

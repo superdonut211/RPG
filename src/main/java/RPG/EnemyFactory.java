@@ -39,7 +39,10 @@ class Orc implements Enemy {
     public String getName() {
         return name;
     }
-
+    @Override
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
     @Override
     public int getAttack() {
         return attack;
@@ -116,6 +119,10 @@ class Troll implements Enemy {
         return speed;
     }
 
+    @Override
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
     @Override
     public int getDefense() {
         return defense;

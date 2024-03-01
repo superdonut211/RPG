@@ -26,4 +26,24 @@ public class FloorManager {
             return "SMALL";
         }
     }
+    
+    public FloorEffect getCurrentFloorEffect() {
+        int cycleLength = 15; // Total length of the cycle for all effects
+        int cyclePosition = (currentFloor % cycleLength); // Position within the current cycle
+
+        // Determine the effect based on the position in the cycle
+        if (cyclePosition >= 1 && cyclePosition <= 5) {
+            // First 5 floors of the cycle
+            return FloorEffect.DOUBLE_DAMAGE;
+        } else if (cyclePosition >= 6 && cyclePosition <= 10) {
+            // Next 5 floors of the cycle
+            return FloorEffect.HALF_DAMAGE;
+        } else if (cyclePosition >= 11 && cyclePosition <= 15 || cyclePosition == 0) {
+            // Last 5 floors of the cycle, including the case where cyclePosition is 0 (which means it's exactly on the cycle boundary)
+            return FloorEffect.SWAP_SPEED;
+        } else {
+            // Default case, should not be reached due to the modulo operation, but included for completeness
+            return FloorEffect.NONE;
+        }
+    }
 }

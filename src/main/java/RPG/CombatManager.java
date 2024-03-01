@@ -4,13 +4,33 @@ public class CombatManager {
     private Random random = new Random();
     private int startingEHealth;
     private StatusEffect currentStatusEffect = StatusEffect.NONE;
-    public void startCombat(Character player, Enemy enemy) {
+    private FloorManager floorManager;
+    public FloorEffect floorEffect;
+    public void startCombat(Character player, Enemy enemy, FloorManager floorManag) {
+    	floorManager = floorManag;
+    	floorEffect = floorManager.getCurrentFloorEffect();
     	System.out.println("A wild " + enemy.getName() + " appears!");
         boolean playerTurn = player.getSpeed() >= enemy.getSpeed();
         startingEHealth = enemy.getHealth();
         // Reset status effect at the start of combat
+        int tempSpeed = 0;
         currentStatusEffect = StatusEffect.NONE;
-
+        switch (floorEffect) {
+        case DOUBLE_DAMAGE:
+            System.out.println("The floor's magic intensifies the battle! Double damage inflicted.");
+            break;
+        case HALF_DAMAGE:
+            System.out.println("The floor's aura softens blows. Half damage inflicted.");
+            break;
+        case SWAP_SPEED:
+            tempSpeed = player.getSpeed();
+            player.setSpeed(enemy.getSpeed());
+            enemy.setSpeed(tempSpeed);
+            System.out.println("The floor's trickery swaps speed attributes!");
+            break;
+        default:
+            break;
+    }
         while (player.getHealth() > 0 && enemy.getHealth() > 0) {
             if (playerTurn) {
                 if (random.nextInt(3) == 0) { // 1/3 chance
@@ -38,6 +58,9 @@ public class CombatManager {
                 System.out.println("You are at: " + player.getHealth() + " HP.\n");
                 player.addXp(startingEHealth);
                 System.out.println("You gained: " + startingEHealth + " XP.\n");
+                if(floorEffect == FloorEffect.SWAP_SPEED) {
+                	player.setSpeed(tempSpeed);
+                }
                 GameEvents.handlePostCombat(player); // Handle post-combat events
             } else if (player.getHealth() <= 0) {
                 System.out.println("You were defeated by the " + enemy.getName() + "...");
@@ -48,26 +71,63 @@ public class CombatManager {
     private void performEnemyAttack(Character player, Enemy enemy) {
         int baseDamage = enemy.getAttack() - player.getDefense();
         baseDamage = Math.max(baseDamage, 1); // Ensure minimum damage
-        
-        // Apply HALF_DAMAGE status effect
-        if (currentStatusEffect == StatusEffect.HALF_DAMAGE) {
-            baseDamage /= 2; // Half the damage due to Fighter's intimidation
-            System.out.println("The enemy's attack is weakened by your intimidation.");
-            currentStatusEffect = StatusEffect.NONE; // Reset status effect after it takes effect
+        int tempSpeed = 0;
+        // Apply floor effects
+        switch (floorEffect) {
+            case DOUBLE_DAMAGE:
+                baseDamage *= 2; // Double the damage for both player and enemy
+                System.out.println("The floor's magic intensifies the battle! Double damage inflicted.");
+                break;
+            case HALF_DAMAGE:
+                baseDamage /= 2; // Half the damage for both player and enemy
+                System.out.println("The floor's aura softens blows. Half damage inflicted.");
+                break;
+            case SWAP_SPEED:
+                // Temporarily swap speeds for this attack
+                tempSpeed = player.getSpeed();
+                player.setSpeed(enemy.getSpeed());
+                enemy.setSpeed(tempSpeed);
+                System.out.println("The floor's trickery swaps speed attributes!");
+                break;
+            default:
+                break;
         }
 
         player.setHealth(player.getHealth() - baseDamage);
         System.out.println("The " + enemy.getName() + " dealt " + baseDamage + " damage to you.");
+        
+        // Revert speed swap after the attack if applicable
+        if (floorEffect == FloorEffect.SWAP_SPEED) {
+            enemy.setSpeed(player.getSpeed());
+            player.setSpeed(tempSpeed);
+            System.out.println("Speed attributes return to normal.");
+        }
     }
     
     private void performRegularAttack(Character player, Enemy enemy) {
-    	System.out.println("It's your turn.");
+    	FloorEffect floorEffect = floorManager.getCurrentFloorEffect();
+        System.out.println("It's your turn.");
         int baseDamage = player.getAttack() - enemy.getDefense();
         baseDamage = Math.max(baseDamage, 1); // Ensure minimum damage
 
+        // Apply floor effect
+        switch (floorEffect) {
+            case DOUBLE_DAMAGE:
+                baseDamage *= 2;
+                System.out.println("Due to the floor's magic, your attack deals double damage!");
+                break;
+            case HALF_DAMAGE:
+                baseDamage /= 2;
+                System.out.println("Due to the floor's curse, your attack deals half damage.");
+                break;
+            case SWAP_SPEED:
+                System.out.println("Speeds are swapped due to the floor's trickery, but it doesn't affect direct damage.");
+                break;
+        }
+
         // Check for critical hit
-        if (random.nextInt(100) < 10) { // 10% chance for critical hit
-            baseDamage *= 2; // Double the damage for critical hit
+        if (random.nextInt(100) < 10) {
+            baseDamage *= 2; // Apply critical hit after floor effect for simplicity
             System.out.println("Critical Hit!");
         }
 
@@ -103,6 +163,7 @@ public class CombatManager {
             case MAGE:
                 System.out.println("Mage's curse! The enemy takes double damage on their next turn.");
                 enemy.takeDamage(damage * 2); // Mage ability deals damage
+                System.out.println("The enemy takes " + (damage * 2)+ " damage from your curse.");
                 break;
             default:
                 System.out.println("No special ability for this class. Performing regular attack.");
