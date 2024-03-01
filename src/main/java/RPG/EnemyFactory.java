@@ -1,14 +1,20 @@
 
 
 public class EnemyFactory {
-    public static Enemy createEnemy(String type) {
+	public static Enemy createEnemy(String type, int floor) {
+        // Calculate the scaling factor based on the floor number
+        int scalingFactor = floor * 2;
+
         switch (type) {
             case "small":
-                return new Orc(); // Standard Orc for small enemy
+                // Apply scaling to the health and attack of a small Orc
+                return new Orc(20 + scalingFactor, 5 + scalingFactor / 2, "Small"); 
             case "medium":
-                return new Orc(30, 7); // Enhanced Orc for medium enemy
+                // Apply more significant scaling for a medium Orc
+                return new Orc(30 + scalingFactor, 7 + scalingFactor / 2, "Medium"); 
             case "boss":
-                return new Troll(); // Troll for boss enemy
+                // Apply the most significant scaling for the boss Troll
+                return new Troll(50 + scalingFactor, 10 + scalingFactor / 2, 10 + floor, 15 + floor / 2); 
             default:
                 throw new IllegalArgumentException("Unknown enemy type: " + type);
         }
@@ -30,7 +36,8 @@ class Orc implements Enemy {
     }
 
     // Constructor for variable stats, allowing for "medium" Orcs
-    public Orc(int health, int attack) {
+    public Orc(int health, int attack, String prefix) {
+    	this.name = prefix + " Orc";
         this.health = health;
         this.attack = attack;
     }
@@ -93,7 +100,12 @@ class Troll implements Enemy {
     private int defense = 15; 
 
 
-    
+    public Troll(int health, int attack, int speed, int defense) {
+        this.health = health;
+        this.attack = attack;
+        this.speed = speed;
+        this.defense = defense;
+    }
     @Override
     public String getName() {
         return name;

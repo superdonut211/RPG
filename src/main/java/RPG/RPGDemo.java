@@ -29,7 +29,7 @@ public class RPGDemo {
             player.printRelevantInfo();
             floorManager.nextFloor();
             String enemyType = floorManager.getEnemyTypeForCurrentFloor();
-            Enemy enemy = enemyManager.spawnEnemy(enemyType);
+            Enemy enemy = enemyManager.spawnEnemy(enemyType,floorManager.getCurrentFloor());
             
             if (enemy != null) {
                 System.out.println("Encountering enemy: " + enemy.getName());
