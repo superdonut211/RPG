@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'checkstyle'
     id "com.github.spotbugs" version "5.0.12"
+    id 'jacoco'
 }
 
 
@@ -17,9 +18,9 @@ repositories {
 }
 
 dependencies {
-    implementation "junit:junit:4.12"
+    implementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
 }
-
 
 
 checkstyle {
@@ -38,4 +39,26 @@ spotbugs {
     ignoreFailures = true
     showProgress = true
     effort = 'max'
+}
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: '**/RPGDemo.class')
+        }))
+    }
+}
+
+
+test {
+    finalizedBy jacocoTestReport // Ensure jacocoTestReport runs after tests
 }

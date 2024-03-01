@@ -6,6 +6,8 @@ public class RPGDemo {
         FloorManager floorManager = new FloorManager();
         EnemyManager enemyManager = new EnemyManager();
 
+        
+        
         System.out.println("Choose your character class:");
         System.out.println("1: Fighter\n2: Mage\n3: Thief\nEnter number for choice or anything else for random:");
         CharacterClass chosenClass = chooseClass(InputScanner.SCANNER.nextLine());
@@ -15,7 +17,7 @@ public class RPGDemo {
         CharacterRace chosenRace = chooseRace(InputScanner.SCANNER.nextLine());
 
         Character player = new Character("Hero", chosenClass, chosenRace, 100, 10, 5, 8, 10);
-        CombatManager combatManager = new CombatManager();
+        CombatManager combatManager = new CombatManager(floorManager);
         Item helmet = ItemFactory.createItem("Helmet", "Steel Helm", 0, 0, 2, 0);
         Item weapon = ItemFactory.createItem("Weapon", "Sword", 0, 5, 0, 0);
         Item armor = ItemFactory.createItem("Armor", "Chainmail", 10, 0, 3, 0);
@@ -33,7 +35,7 @@ public class RPGDemo {
             
             if (enemy != null) {
                 System.out.println("Encountering enemy: " + enemy.getName());
-                combatManager.startCombat(player, enemy, floorManager);
+                combatManager.startCombat(player, enemy);
                 
                 if (player.getHealth() <= 0) {
                     if (floorManager.getCurrentFloor() % 10 == 0) {

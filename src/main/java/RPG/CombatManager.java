@@ -1,140 +1,128 @@
 import java.util.Random;
 
 public class CombatManager {
-    private Random random = new Random();
+	private RandomGenerator randomGenerator;
     private int startingEHealth;
     private StatusEffect currentStatusEffect = StatusEffect.NONE;
     private FloorManager floorManager;
     public FloorEffect floorEffect;
-    public void startCombat(Character player, Enemy enemy, FloorManager floorManag) {
-    	floorManager = floorManag;
-    	floorEffect = floorManager.getCurrentFloorEffect();
-    	System.out.println("A wild " + enemy.getName() + " appears!");
+    private int originalPlayerSpeed;
+    private int originalEnemySpeed;
+
+    public CombatManager(FloorManager floorManager, RandomGenerator randomGenerator) {
+        this.floorManager = floorManager;
+        this.floorEffect = floorManager.getCurrentFloorEffect();
+        this.randomGenerator = randomGenerator;
+    }
+    public CombatManager(FloorManager floorManager) {
+    	this.randomGenerator = new DefaultRandomGenerator();
+        this.floorManager = floorManager;
+        this.floorEffect = floorManager.getCurrentFloorEffect();
+    }
+
+    public void startCombat(Character player, Enemy enemy) {
+        System.out.println("A wild " + enemy.getName() + " appears!");
         boolean playerTurn = player.getSpeed() >= enemy.getSpeed();
         startingEHealth = enemy.getHealth();
-        // Reset status effect at the start of combat
-        int tempSpeed = 0;
         currentStatusEffect = StatusEffect.NONE;
-        switch (floorEffect) {
-        case DOUBLE_DAMAGE:
-            System.out.println("The floor's magic intensifies the battle! Double damage inflicted.");
-            break;
-        case HALF_DAMAGE:
-            System.out.println("The floor's aura softens blows. Half damage inflicted.");
-            break;
-        case SWAP_SPEED:
-            tempSpeed = player.getSpeed();
-            player.setSpeed(enemy.getSpeed());
-            enemy.setSpeed(tempSpeed);
-            System.out.println("The floor's trickery swaps speed attributes!");
-            break;
-        default:
-            break;
-    }
+        originalPlayerSpeed = player.getSpeed(); // Store original player speed
+        originalEnemySpeed = enemy.getSpeed(); // Store original enemy speed
+        applyFloorEffect(player, enemy);
+
         while (player.getHealth() > 0 && enemy.getHealth() > 0) {
             if (playerTurn) {
-                if (random.nextInt(3) == 0) { // 1/3 chance
-                    useSpecialAbility(player, enemy);
-                } else {
-                    performRegularAttack(player, enemy);
-                } 
+                performPlayerTurn(player, enemy);
             } else {
-                // Check for skip turn effect
-                if (currentStatusEffect == StatusEffect.SKIP_TURN) {
-                    System.out.println("The enemy skips their turn due to the Thief's trickery!");
-                    currentStatusEffect = StatusEffect.NONE; // Reset status effect after it takes effect
-                    playerTurn = !playerTurn; // Maintain player's turn
-                    continue; // Skip to the next iteration, keeping it the player's turn
-                }
-                
-                System.out.println("It's the enemy's turn.");
-                performEnemyAttack(player, enemy);
+                performEnemyTurn(player, enemy);
             }
-
-            playerTurn = !playerTurn; // Switch turns
-
-            if (enemy.getHealth() <= 0) {
-                System.out.println("You have defeated the " + enemy.getName() + "!");
-                System.out.println("You are at: " + player.getHealth() + " HP.\n");
-                player.addXp(startingEHealth);
-                System.out.println("You gained: " + startingEHealth + " XP.\n");
-                if(floorEffect == FloorEffect.SWAP_SPEED) {
-                	player.setSpeed(tempSpeed);
-                }
-                GameEvents.handlePostCombat(player); // Handle post-combat events
-            } else if (player.getHealth() <= 0) {
-                System.out.println("You were defeated by the " + enemy.getName() + "...");
-            }
+            playerTurn = !playerTurn;
         }
+        checkCombatOutcome(player, enemy, startingEHealth);
+        resetSpeed(player, enemy); // Reset speeds after combat
     }
-    
-    private void performEnemyAttack(Character player, Enemy enemy) {
-        int baseDamage = enemy.getAttack() - player.getDefense();
-        baseDamage = Math.max(baseDamage, 1); // Ensure minimum damage
-        int tempSpeed = 0;
-        // Apply floor effects
+
+    private void applyFloorEffect(Character player, Enemy enemy) {
         switch (floorEffect) {
             case DOUBLE_DAMAGE:
-                baseDamage *= 2; // Double the damage for both player and enemy
                 System.out.println("The floor's magic intensifies the battle! Double damage inflicted.");
                 break;
             case HALF_DAMAGE:
-                baseDamage /= 2; // Half the damage for both player and enemy
                 System.out.println("The floor's aura softens blows. Half damage inflicted.");
                 break;
             case SWAP_SPEED:
-                // Temporarily swap speeds for this attack
-                tempSpeed = player.getSpeed();
+                int tempSpeed = player.getSpeed();
                 player.setSpeed(enemy.getSpeed());
                 enemy.setSpeed(tempSpeed);
                 System.out.println("The floor's trickery swaps speed attributes!");
                 break;
             default:
+                System.out.println("No special floor effect.");
                 break;
-        }
-
-        player.setHealth(player.getHealth() - baseDamage);
-        System.out.println("The " + enemy.getName() + " dealt " + baseDamage + " damage to you.");
-        
-        // Revert speed swap after the attack if applicable
-        if (floorEffect == FloorEffect.SWAP_SPEED) {
-            enemy.setSpeed(player.getSpeed());
-            player.setSpeed(tempSpeed);
-            System.out.println("Speed attributes return to normal.");
         }
     }
-    
-    private void performRegularAttack(Character player, Enemy enemy) {
-    	FloorEffect floorEffect = floorManager.getCurrentFloorEffect();
-        System.out.println("It's your turn.");
-        int baseDamage = player.getAttack() - enemy.getDefense();
-        baseDamage = Math.max(baseDamage, 1); // Ensure minimum damage
 
-        // Apply floor effect
-        switch (floorEffect) {
-            case DOUBLE_DAMAGE:
-                baseDamage *= 2;
-                System.out.println("Due to the floor's magic, your attack deals double damage!");
-                break;
-            case HALF_DAMAGE:
-                baseDamage /= 2;
-                System.out.println("Due to the floor's curse, your attack deals half damage.");
-                break;
-            case SWAP_SPEED:
-                System.out.println("Speeds are swapped due to the floor's trickery, but it doesn't affect direct damage.");
-                break;
+    private void performPlayerTurn(Character player, Enemy enemy) {
+        if (randomGenerator.nextInt(3) == 0) {
+            useSpecialAbility(player, enemy);
+        } else {
+            performRegularAttack(player, enemy);
         }
+    }
 
-        // Check for critical hit
-        if (random.nextInt(100) < 10) {
-            baseDamage *= 2; // Apply critical hit after floor effect for simplicity
+    private void performEnemyTurn(Character player, Enemy enemy) {
+        if (currentStatusEffect == StatusEffect.SKIP_TURN) {
+            System.out.println("Enemy skips their turn due to Thief's trickery!");
+            currentStatusEffect = StatusEffect.NONE;
+        } else {
+            performEnemyAttack(player, enemy);
+        }
+    }
+
+    private void performEnemyAttack(Character player, Enemy enemy) {
+        int damage = enemy.getAttack() - player.getDefense();
+        if (floorEffect == FloorEffect.HALF_DAMAGE) {
+            damage /= 2;
+        } else if (floorEffect == FloorEffect.DOUBLE_DAMAGE) {
+            damage *= 2;
+        }
+        damage = Math.max(damage, 1); // Ensure minimum damage
+        player.setHealth(player.getHealth() - damage);
+        System.out.println("Enemy attacks for " + damage + " damage.");
+    }
+
+    private void performRegularAttack(Character player, Enemy enemy) {
+        int damage = player.getAttack() - enemy.getDefense();
+        if (floorEffect == FloorEffect.HALF_DAMAGE) {
+            damage /= 2;
+        } else if (floorEffect == FloorEffect.DOUBLE_DAMAGE) {
+            damage *= 2;
+        }
+        if (randomGenerator.nextInt(10) < 1) { // 10% chance for critical hit
+            damage *= 2;
             System.out.println("Critical Hit!");
         }
+        damage = Math.max(damage, 1); // Ensure minimum damage
+        enemy.takeDamage(damage);
+        System.out.println("You dealt " + damage + " damage.");
+    }
 
-        enemy.takeDamage(baseDamage);
-        System.out.println("You dealt " + baseDamage + " damage to the " + enemy.getName() + ".");
-        System.out.println("You are at: " + player.getHealth() + " HP.\n");
-        System.out.println(enemy.getName() + " is at: " + enemy.getHealth() + " HP.");
+    private void checkCombatOutcome(Character player, Enemy enemy, int startingEHealth) {
+        if (enemy.getHealth() <= 0) {
+            System.out.println("You have defeated the " + enemy.getName() + "!");
+            player.addXp(startingEHealth);
+        } else if (player.getHealth() <= 0) {
+            System.out.println("You were defeated by the " + enemy.getName() + "...");
+        }
+        // Reset any temporary effects after combat
+        if (floorEffect == FloorEffect.SWAP_SPEED) {
+            resetSpeed(player, enemy);
+        }
+    }
+
+    private void resetSpeed(Character player, Enemy enemy) {
+        player.setSpeed(originalPlayerSpeed); // Reset player speed to original
+        enemy.setSpeed(originalEnemySpeed); // Reset enemy speed to original
+        System.out.println("Speed attributes reset to normal.");
     }
     
     private void useSpecialAbility(Character player, Enemy enemy) {
@@ -171,5 +159,4 @@ public class CombatManager {
                 break;
         }
     }
-    
 }
