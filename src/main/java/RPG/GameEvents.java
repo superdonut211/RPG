@@ -2,60 +2,89 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GameEvents {
-    private static final Random random = new Random();
+	public static Random random = new Random();
+    public static boolean forceChest = false;
+    public static boolean forceShop = false;
 
-    public static void handlePostCombat(Character player) {
-    	if (random.nextInt(100) < 30) {
-            System.out.println("You found a chest!");
-            int foundCurrency = random.nextInt(50) + 10;
-            player.addCurrency(foundCurrency);
-            System.out.println("You found " + foundCurrency + " coins!");
+    // Setter methods for test control
+    public static void setForceChest(boolean forceChest) {
+        GameEvents.forceChest = forceChest;
+    }
 
-            // Generate a random item
-            Item foundItem = generateRandomItem();
-            System.out.println("You found a " + foundItem.getName() + "!");
+    public static void setForceShop(boolean forceShop) {
+        GameEvents.forceShop = forceShop;
+    }
 
-            System.out.println("Do you want to equip it? (yes/no)");
-            String input = InputScanner.SCANNER.nextLine();
-            if (input.equalsIgnoreCase("yes")) {
-                // Logic to equip the item based on its type
-                if (foundItem instanceof Helmet) {
-                    player.equipHelmet((Helmet) foundItem);
-                } else if (foundItem instanceof Weapon) {
-                    player.equipWeapon((Weapon) foundItem);
-                } else if (foundItem instanceof Armor) {
-                    player.equipArmor((Armor) foundItem);
-                }
-                System.out.println("You equipped the " + foundItem.getName() + ".");
-            } else {
-                // If they choose not to equip, give them some gold instead
-                int gold = random.nextInt(20) + 10; // Random gold between 10 and 30
-                player.addCurrency(gold);
-                System.out.println("You skipped the item and found " + gold + " gold instead.");
-            }
+    public static void resetForces() {
+        forceChest = false;
+        forceShop = false;
+    }
 
-            
-        }else if (random.nextInt(100) < 10) { // 10% chance to find a shop
-            System.out.println("You've stumbled upon a shop! Do you wish to enter? (yes/no)");
-            String shopInput = InputScanner.SCANNER.nextLine();
-            if (shopInput.equalsIgnoreCase("yes")) {
-                enterShop(player);
-            } else {
-                System.out.println("You decided to skip the shop.");
-            }
-        } 
-    	else { // Chance to restore health/mana
-            int healthRestored = random.nextInt(20) + 10; // Restore between 10 and 30 health
-            player.setHealth(Math.min(player.getHealth() + healthRestored, player.getMaxHealth()));
-            System.out.println("You found a health potion and restored " + healthRestored + " health!");
-
-            int manaRestored = random.nextInt(15) + 5; // Restore between 5 and 20 mana
-            player.restoreMana(Math.min(player.getMana() + manaRestored, player.getMaxMana()));
-            System.out.println("You found a mana potion and restored " + manaRestored + " mana!");
+    public static boolean handlePostCombat(Character player) {
+        if (forceChest || foundChest() && !forceShop) {
+            handleChest(player);
+            return false;
+        } else if (forceShop || foundShop()) {
+            handleShop(player);
+            return true;
+        } else {
+            restoreHealthAndMana(player);
+            return false;
         }
     }
-    
-    private static Item generateRandomItem() {
+
+    public static boolean foundChest() {
+        return random.nextInt(100) < 40;
+    }
+
+    public static boolean foundShop() {
+        return random.nextInt(100) < 10;
+    }
+
+    public static void handleChest(Character player) {
+        System.out.println("You found a chest!");
+        int foundCurrency = 50;
+        player.addCurrency(foundCurrency);
+        System.out.println("You found " + foundCurrency + " coins!");
+
+        Item foundItem = generateRandomItem();
+        System.out.println("You found a " + foundItem.getName() + "!");
+
+        System.out.println("Do you want to equip it? (yes/no)");
+        String input = InputScanner.SCANNER.nextLine();
+        if (input.equalsIgnoreCase("yes")) {
+            equipItem(player, foundItem);
+        } else {
+            int gold = 50; // Adjusted to be consistent with the currency obtained if the item is equipped
+            player.addCurrency(gold);
+            System.out.println("You skipped the item and found " + gold + " gold instead.");
+        }
+    }
+
+
+    public static boolean handleShop(Character player) {
+        System.out.println("You've stumbled upon a shop! Do you wish to enter? (yes/no)");
+        String shopInput = InputScanner.SCANNER.nextLine();
+        if (shopInput.equalsIgnoreCase("yes")) {
+            enterShop(player);
+            return true;
+        } else {
+            System.out.println("You decided to skip the shop.");
+            return false;
+        }
+    }
+
+    public static void restoreHealthAndMana(Character player) {
+        int healthRestored = random.nextInt(20) + 10;
+        player.setHealth(Math.min(player.getHealth() + healthRestored, player.getMaxHealth()));
+        System.out.println("You found a health potion and restored " + healthRestored + " health!");
+
+        int manaRestored = random.nextInt(15) + 5;
+        player.restoreMana(Math.min(player.getMana() + manaRestored, player.getMaxMana()));
+        System.out.println("You found a mana potion and restored " + manaRestored + " mana!");
+    }
+
+    public static Item generateRandomItem() {
         // Expanding the range for the new items
         int itemType = random.nextInt(17); // Adjusted for 8 new items
 
@@ -106,9 +135,9 @@ public class GameEvents {
                 return null; // Fallback in case of an unexpected value
         }
     }
-    
-    private static void enterShop(Character player) {
-        System.out.println("Welcome to the shop! Here's what's available for purchase:");
+
+    public static void enterShop(Character player) {
+    	System.out.println("Welcome to the shop! Here's what's available for purchase:");
         System.out.println("1. Health Potion (50 gold)");
         System.out.println("2. Mana Potion (50 gold)");
         System.out.println("3. Random Item (100 gold)");
@@ -152,5 +181,16 @@ public class GameEvents {
                 System.out.println("Invalid selection.");
                 break;
         }
+    }
+
+    public static void equipItem(Character player, Item item) {
+        if (item instanceof Helmet) {
+            player.equipHelmet((Helmet) item);
+        } else if (item instanceof Weapon) {
+            player.equipWeapon((Weapon) item);
+        } else if (item instanceof Armor) {
+            player.equipArmor((Armor) item);
+        }
+        System.out.println("You equipped the " + item.getName() + ".");
     }
 }

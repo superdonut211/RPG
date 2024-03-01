@@ -61,7 +61,7 @@ public class RPGDemo {
                 player.setHealth(player.getMaxHealth()); // Restore health
                 player.restoreMana(player.getMaxMana()); // Restore mana
             }
-
+            GameEvents.handlePostCombat(player);
             System.out.println("Continue to the next floor? (yes/no)");
             String input = InputScanner.SCANNER.nextLine();
             if (!input.equalsIgnoreCase("yes")) {

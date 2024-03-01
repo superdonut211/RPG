@@ -74,20 +74,6 @@ class Orc implements Enemy {
     public int getDefense() {
         return defense;
     }
-    @Override
-    public void applyStatusEffect(StatusEffect effect) {
-        this.statusEffect = effect;
-    }
-
-    @Override
-    public StatusEffect getStatusEffect() {
-        return statusEffect;
-    }
-
-    @Override
-    public void clearStatusEffect() {
-        this.statusEffect = null;
-    }
 }
 
 
@@ -138,20 +124,6 @@ class Troll implements Enemy {
     @Override
     public int getDefense() {
         return defense;
-    }
-    @Override
-    public void applyStatusEffect(StatusEffect effect) {
-        this.statusEffect = effect;
-    }
-
-    @Override
-    public StatusEffect getStatusEffect() {
-        return statusEffect;
-    }
-
-    @Override
-    public void clearStatusEffect() {
-        this.statusEffect = null;
     }
     
 }
