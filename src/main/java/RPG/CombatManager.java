@@ -9,8 +9,8 @@ public class CombatManager {
     private int originalPlayerSpeed;
     private int originalEnemySpeed;
 
-    public CombatManager(FloorManager floorManager, RandomGenerator randomGenerator) {
-        this.floorManager = floorManager;
+    public CombatManager(FloorManager floorManager2, RandomGenerator randomGenerator) {
+        floorManager = floorManager2;
         this.floorEffect = floorManager.getCurrentFloorEffect();
         this.randomGenerator = randomGenerator;
     }
@@ -151,7 +151,7 @@ public class CombatManager {
             case MAGE:
                 System.out.println("Mage's curse! The enemy takes double damage on their next turn.");
                 enemy.takeDamage(damage * 2); // Mage ability deals damage
-                System.out.println("The enemy takes " + (damage * 2)+ " damage from your curse.");
+                System.out.println("The enemy takes " + (damage * 2) + " damage from your curse.");
                 break;
             default:
                 System.out.println("No special ability for this class. Performing regular attack.");

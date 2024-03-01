@@ -1,5 +1,17 @@
 public class EnemyManager {
+	private static EnemyManager instance;
     private EnemyFactory enemyFactory = new EnemyFactory();
+
+
+    private EnemyManager() {}
+
+
+    public static EnemyManager getInstance() {
+        if (instance == null) {
+            instance = new EnemyManager();
+        }
+        return instance;
+    }
 
     public Enemy spawnEnemy(String enemyType, int floorNumber) {
         switch (enemyType) {

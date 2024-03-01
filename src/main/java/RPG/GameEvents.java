@@ -2,9 +2,9 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GameEvents {
-	public static Random random = new Random();
-    public static boolean forceChest = false;
-    public static boolean forceShop = false;
+	public static final Random random = new Random();
+    static boolean forceChest = false;
+    static boolean forceShop = false;
 
     // Setter methods for test control
     public static void setForceChest(boolean forceChest) {

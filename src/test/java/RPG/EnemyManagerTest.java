@@ -8,7 +8,7 @@ public class EnemyManagerTest {
 
     @Before
     public void setUp() {
-        enemyManager = new EnemyManager();
+        enemyManager = EnemyManager.getInstance();
     }
 
     @Test

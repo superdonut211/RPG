@@ -22,7 +22,6 @@ public class EnemyFactory {
 }
 
 class Orc implements Enemy {
-	private StatusEffect statusEffect = null;
     private int health = 20;
     private int attack = 5;
     private String name = "Orc";
@@ -78,7 +77,6 @@ class Orc implements Enemy {
 
 
 class Troll implements Enemy {
-	private StatusEffect statusEffect = null;
     private int health = 20;
     private int attack = 5;
     private String name = "Troll";

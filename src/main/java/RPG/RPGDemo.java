@@ -1,10 +1,13 @@
 import java.util.Random;
 import java.util.Scanner;
 
+
 public class RPGDemo {
+	private static final Random random = new Random();
+	
     public static void main(String[] args) {
         FloorManager floorManager = new FloorManager();
-        EnemyManager enemyManager = new EnemyManager();
+        EnemyManager enemyManager = EnemyManager.getInstance();
 
         
         
@@ -31,7 +34,7 @@ public class RPGDemo {
             player.printRelevantInfo();
             floorManager.nextFloor();
             String enemyType = floorManager.getEnemyTypeForCurrentFloor();
-            Enemy enemy = enemyManager.spawnEnemy(enemyType,floorManager.getCurrentFloor());
+            Enemy enemy = enemyManager.spawnEnemy(enemyType, floorManager.getCurrentFloor());
             
             if (enemy != null) {
                 System.out.println("Encountering enemy: " + enemy.getName());
@@ -80,7 +83,7 @@ public class RPGDemo {
             case "3": return CharacterClass.THIEF;
             default:
                 CharacterClass[] classes = CharacterClass.values();
-                return classes[new Random().nextInt(classes.length)];
+                return classes[random.nextInt(classes.length)]; // Use the shared Random instance
         }
     }
 
@@ -92,7 +95,7 @@ public class RPGDemo {
             case "4": return CharacterRace.HUMAN;
             default:
                 CharacterRace[] races = CharacterRace.values();
-                return races[new Random().nextInt(races.length)];
+                return races[random.nextInt(races.length)]; // Use the shared Random instance
         }
     }
 }
